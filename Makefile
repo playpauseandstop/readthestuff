@@ -5,6 +5,9 @@ PROJECT = readthestuff
 ENV ?= env
 VENV := $(shell echo $(VIRTUAL_ENV))
 
+HOST ?= 0.0.0.0
+PORT ?= 8321
+
 ifneq ($(VENV),)
 	FLAKE8 = flake8
 	HONCHO = honcho
@@ -24,7 +27,7 @@ clean:
 	find . -name "*.pyc" -delete
 
 devserver: clean pep8
-	$(HONCHO) run dev
+	HOST=$(HOST) PORT=$(PORT) $(HONCHO) start dev
 
 manage:
 	$(PYTHON) manage.py $(COMMAND)
@@ -33,7 +36,7 @@ pep8:
 	$(FLAKE8) $(PROJECT)/
 
 rq: clean pep8
-	$(HONCHO) run rq
+	$(HONCHO) start rq
 
 server: clean pep8
-	$(HONCHO) run server
+	HOST=$(HOST) PORT=$(PORT) $(HONCHO) start server
