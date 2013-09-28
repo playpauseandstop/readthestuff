@@ -27,7 +27,6 @@ clean:
 createdb:
 	psql -c '\du' | grep "^ $(PROJECT)" && : || createuser -s -P $(PROJECT)
 	psql -l | grep "^ $(PROJECT)" && : || createdb -U $(PROJECT) $(PROJECT)
-	psql -U $(PROJECT) -d $(PROJECT) -f $(PROJECT)/sql/initial.sql -v client_min_messages=warning
 
 dbshell:
 	psql -U $(PROJECT) -d $(PROJECT)
@@ -42,6 +41,7 @@ dropdb:
 	dropdb -U $(PROJECT) $(PROJECT)
 
 initdb: createdb
+	psql -U $(PROJECT) -d $(PROJECT) -f $(PROJECT)/sql/initial.sql -v client_min_messages=warning
 
 manage:
 	$(PYTHON) manage.py $(COMMAND)
