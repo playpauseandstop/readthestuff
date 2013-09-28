@@ -6,11 +6,11 @@
   {% endif %}
 {% endblock %}
 {% block title -%}
-  {% if not form %}{% if subscriptions %}Congratulations!{% else %}Oh, snap!{% endif %}{% endif %}
+  {% if not form %}{% if stored %}Congratulations!{% else %}Oh, snap!{% endif %}{% endif %}
 {%- endblock %}
 {% block content %}
   {% if not form %}
-    {% if subscriptions %}
+    {% if stored %}
     <div class="alert alert-success">
       <p>
         Your subscriptions successfully loaded to <strong>Read the Stuff</strong>.
@@ -25,9 +25,11 @@
     <div class="alert alert-danger">
       <p>
         Unfortunately, but we cannot load any subscriptions from your OPML file.
-        Please check that you submit proper file. If not return
-        <a href="{{ reverse("index") }}">to previous page</a> and try one
-        more time.
+      </p>
+      <p>
+        Please check that you submit proper file. If not, return
+        <a class="alert-link" href="{{ reverse("index") }}">to previous page</a>
+        and try one more time.
       </p>
     </div>
     {% endif %}
