@@ -17,6 +17,13 @@ from rororo.utils import import_settings
 DEBUG = False
 
 # Datastore settings
+DATABASE_URL = (
+    'postgresql://readthestuff:readthestuff@127.0.0.1:5432/readthestuff'
+)
+DATABASE_POOL_OPTIONS = {
+    'min_connections': 0,
+    'max_connections': 20,
+}
 ELASTICSEARCH_URL = 'http://127.0.0.1:9200/'
 REDIS_URL = 'redis://127.0.0.1:6379/0'
 

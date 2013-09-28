@@ -15,10 +15,14 @@ from redis import StrictRedis
 from rororo.app import create_app
 
 from . import settings
+from .ext import init_db_pool
 
 
 # Create suitable WSGI application
 app = create_app(settings)
+
+# Setup PostgreSQL connection pool
+db = init_db_pool(app)
 
 # Setup connections to ElasticSearch and Redis
 elastic = ElasticSearch(app.settings.ELASTICSEARCH_URL)

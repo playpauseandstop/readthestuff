@@ -10,6 +10,7 @@ Requirements
 * `Python <http://www.python.org/>`_ 2.7
 * `Make <http://www.gnu.org/software/make>`_
 * `bootstrapper <http://pypi.python.org/pypi/bootstrapper>`_ 0.1.5 or higher
+* `PostgreSQL <http://www.postgresql.org/>`_ 9.3 or higher
 * `ElasticSearch <http://elasticsearch.org/>`_ 0.10.5 or higher
 * `Redis <http://redis.io/>`_ 2.6.16 or higher
 
@@ -28,11 +29,17 @@ which just run::
 
     $ make bootstrap
 
-Next, make sure you have `ElasticSearch`_ and `Redis`_ installed in your
-system and provide URLs for access these services in local settings as::
+Next, make sure you have `PostgreSQL`_, `ElasticSearch`_ and `Redis`_ installed
+in your system and provide URLs for access these services in local settings
+as::
 
+    DATABASE_URL = 'postgres://USERNAME:PASSWORD@HOST:PORT/DATABASE'
     ELASTICSEARCH_URL = 'http://URL:9200/'
     REDIS_URL = 'redis://URL:6379/'
+
+And finally, you need to initialize PostgreSQL database. To this, just run::
+
+    $ make initdb
 
 Now you ready to go.
 

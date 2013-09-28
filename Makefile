@@ -1,4 +1,4 @@
-.PHONY: clean devserver distclean manage rq server
+.PHONY: bootstrap clean createdb dbshell devserver distclean dropdb initdb manage rq server
 
 PROJECT = readthestuff
 
@@ -24,11 +24,24 @@ bootstrap:
 clean:
 	find . -name "*.pyc" -delete
 
-devserver: clean pep8
-	HOST=$(HOST) PORT=$(PORT) $(HONCHO) start dev
+createdb:
+	psql -c '\du' | grep "^ $(PROJECT)" && : || createuser -s -P $(PROJECT)
+	psql -l | grep "^ $(PROJECT)" && : || createdb -U $(PROJECT) $(PROJECT)
+	psql -U $(PROJECT) -d $(PROJECT) -f $(PROJECT)/sql/initial.sql -v client_min_messages=warning
 
-distclean: clean
+dbshell:
+	psql -U $(PROJECT) -d $(PROJECT)
+
+devserver: clean pep8
+	COMMAND="runserver --host=$(HOST) --port=$(PORT)" $(MAKE) manage
+
+distclean: clean dropdb
 	rm -r $(ENV)/ $(PROJECT)/settings_local.py
+
+dropdb:
+	dropdb -U $(PROJECT) $(PROJECT)
+
+initdb: createdb
 
 manage:
 	$(PYTHON) manage.py $(COMMAND)
