@@ -75,12 +75,17 @@ PEP8_CLASS = 'flake8.engine.get_style_guide'
 
 # Routes settings
 ROUTES = (
-    GET('/', 'readthestuff.views.index', name='index', renderer='index.html'),
+    GET('/', 'index', renderer='index.html'),
     POST('/import',
-         'readthestuff.views.import_subscriptions',
-         name='import_subscriptions',
+         'import_subscriptions',
          renderer='import_subscriptions.html'),
+    GET('/test', 'test', renderer='test.html')
 )
+ROUTES_VIEW_PREFIX = 'readthestuff.views'
+
+# Session settings
+SECRET_KEY = 'please provide proper secret key in local settings'
+SESSION_KEY = 'readthestuff_sid'
 
 # Import local settings
 import_settings('readthestuff.settings_local', locals(), True)

@@ -8,9 +8,96 @@ sessions for web requests.
 
 """
 
+import os
 import urlparse
 
+from beaker.cache import clsmap
+from beaker.container import NamespaceManager
+from beaker.exceptions import MissingCacheParameter
+from beaker.synchronization import file_synchronizer
+from beaker.util import verify_directory
 from psycopg2.pool import ThreadedConnectionPool
+from redis import StrictRedis
+
+
+class RedisBeakerManager(NamespaceManager):
+    """
+    Support of Redis backend for Beaker session and cache managers.
+    """
+    def __init__(self, namespace, url, data_dir=None, lock_dir=None):
+        """
+        Initialize Redis connection.
+        """
+        super(NamespaceManager, self).__init__(namespace)
+
+        if not url:
+            raise MissingCacheParameter('URL setting for Redis is required.')
+
+        if lock_dir:
+            self.lock_dir = lock_dir
+        elif data_dir:
+            self.lock_dir = os.path.join(data_dir, 'container_redis_lock')
+
+        if self.lock_dir:
+            verify_directory(self.lock_dir)
+
+        self.redis = StrictRedis.from_url(url)
+
+    def __contains__(self, key):
+        """
+        Check that key present in cache.
+        """
+        return self.redis.get(self._format_key(key)) is not None
+
+    def __delitem__(self, key):
+        """
+        Delete key from cache.
+        """
+        self.redis.delete(self._format_key(key))
+
+    def __getitem__(self, key):
+        """
+        Return key from cache.
+        """
+        return self.redis.get(self._format_key(key))
+
+    def __setitem__(self, key, value):
+        """
+        Set key to cache without any expiration.
+        """
+        self.redis.set(self._format_key(key), value)
+
+    def do_remove(self):
+        """
+        Flush all keys from current db.
+        """
+        self.redis.flushdb()
+
+    def get_creation_lock(self, key):
+        """
+        Setup creation lock.
+        """
+        identifier = u'/'.join(('rediscontainer', 'funclock',
+                                self.namespace, key))
+        return file_synchronizer(identifier=identifier, lock_dir=self.lock_dir)
+
+    def keys(self):
+        """
+        Redis has value to iterate over all added keys to cache.
+        """
+        return self.redis.keys('*')
+
+    def set_value(self, key, value, expiretime=None):
+        """
+        Set key to cache with optional expiration time.
+        """
+        self.redis.set(self._format_key(key), value, ex=expiretime)
+
+    def _format_key(self, key):
+        """
+        Prepend namespace value to key.
+        """
+        return ':'.join((self.namespance, key))
 
 
 def init_db_pool(app):
@@ -46,3 +133,10 @@ def init_db_pool(app):
 
     # Make and return connection pool
     return ThreadedConnectionPool(min_connections, max_connections, **kwargs)
+
+
+def register_redis_to_beaker():
+    """
+    Register Redis manager to Beaker cache backends.
+    """
+    clsmap._clsmap['ext:redis'] = RedisBeakerManager

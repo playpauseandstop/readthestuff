@@ -8,3 +8,6 @@ REDIS_URL = 'redis://127.0.0.1:6379/0'
 # Logging settings
 LOCAL_LOGGING = {}
 SENTRY_DSN = 'Sentry DSN URL'
+
+# Other settings
+SECRET_KEY = 'please provide unique secret key here'
