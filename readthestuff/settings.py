@@ -9,6 +9,7 @@ Main settings for Read the Stuff project.
 
 import sys
 
+from psycopg2.extras import NamedTupleCursor
 from rororo import GET, POST
 from rororo.utils import import_settings
 
@@ -21,6 +22,7 @@ DATABASE_URL = (
     'postgresql://readthestuff:readthestuff@127.0.0.1:5432/readthestuff'
 )
 DATABASE_POOL_OPTIONS = {
+    'cursor_factory': NamedTupleCursor,
     'min_connections': 0,
     'max_connections': 20,
 }
