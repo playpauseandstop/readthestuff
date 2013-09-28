@@ -16,7 +16,7 @@ Requirements
 License
 =======
 
-``readthestuff`` project is licensed under the terms of `MIT License
+``readthestuff`` project is licensed under the terms of `BSD License
 <https://github.com/playpauseandstop/readthestuff/blob/LICENSE>`_.
 
 Installation
