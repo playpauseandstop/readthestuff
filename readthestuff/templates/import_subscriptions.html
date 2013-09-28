@@ -6,7 +6,7 @@
   {% endif %}
 {% endblock %}
 {% block title -%}
-  {% if not form %}{% if stored %}Congratulations!{% else %}Oh, snap!{% endif %}{% endif %}
+  {% if not form %}{% if stored %}Congratulations!{% else %}Oh, snap!{% endif %}{% else %}{{ super() }}{% endif %}
 {%- endblock %}
 {% block content %}
   {% if not form %}
