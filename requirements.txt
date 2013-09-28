@@ -1,0 +1,9 @@
+flake8==2.0
+gunicorn==18.0
+pep8==1.4.6
+pyelasticsearch==0.6
+pyflakes==0.7.3
+redis==2.8.0
+rq==0.3.11
+
+-e git://github.com/playpauseandstop/rororo.git#egg=rororo
