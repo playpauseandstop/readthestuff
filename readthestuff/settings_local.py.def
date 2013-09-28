@@ -1,0 +1,10 @@
+# Debug settings
+DEBUG = True
+
+# Datastore settings
+ELASTICSEARCH_URL = 'http://127.0.0.1:9200/'
+REDIS_URL = 'redis://127.0.0.1:6379/0'
+
+# Logging settings
+LOCAL_LOGGING = {}
+SENTRY_DSN = 'Sentry DSN URL'

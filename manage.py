@@ -8,10 +8,12 @@ Management script for Read the Stuff project.
 
 """
 
+import sys
+
 from rororo.manager import manage
 
 from readthestuff.app import app
 
 
 if __name__ == '__main__':
-    manage(app)
+    sys.exit(int(not manage(app)))

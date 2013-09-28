@@ -9,12 +9,10 @@ HOST ?= 0.0.0.0
 PORT ?= 8321
 
 ifneq ($(VENV),)
-	FLAKE8 = flake8
 	HONCHO = honcho
 	IPYTHON = ipython
 	PYTHON = python
 else
-	FLAKE8 = $(ENV)/bin/flake8
 	HONCHO = . $(ENV)/bin/activate && honcho
 	IPYTHON = $(ENV)/bin/ipython
 	PYTHON = $(ENV)/bin/python
@@ -29,14 +27,20 @@ clean:
 devserver: clean pep8
 	HOST=$(HOST) PORT=$(PORT) $(HONCHO) start dev
 
+distclean: clean
+	rm -r $(ENV)/ $(PROJECT)/settings_local.py
+
 manage:
 	$(PYTHON) manage.py $(COMMAND)
 
 pep8:
-	$(FLAKE8) $(PROJECT)/
+	COMMAND=pep8 $(MAKE) manage
 
 rq: clean pep8
 	$(HONCHO) start rq
 
 server: clean pep8
 	HOST=$(HOST) PORT=$(PORT) $(HONCHO) start server
+
+shell:
+	$(IPYTHON) --deep-reload --no-banner --no-confirm-exit --pprint
