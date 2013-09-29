@@ -11,6 +11,11 @@ sessions for web requests.
 import os
 import urlparse
 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
 from beaker.cache import clsmap
 from beaker.container import NamespaceManager
 from beaker.exceptions import MissingCacheParameter
@@ -24,11 +29,11 @@ class RedisBeakerManager(NamespaceManager):
     """
     Support of Redis backend for Beaker session and cache managers.
     """
-    def __init__(self, namespace, url, data_dir=None, lock_dir=None):
+    def __init__(self, namespace, url, data_dir=None, lock_dir=None, **kwargs):
         """
         Initialize Redis connection.
         """
-        super(NamespaceManager, self).__init__(namespace)
+        NamespaceManager.__init__(self, namespace)
 
         if not url:
             raise MissingCacheParameter('URL setting for Redis is required.')
@@ -59,13 +64,13 @@ class RedisBeakerManager(NamespaceManager):
         """
         Return key from cache.
         """
-        return self.redis.get(self._format_key(key))
+        return pickle.loads(self.redis.get(self._format_key(key)))
 
     def __setitem__(self, key, value):
         """
         Set key to cache without any expiration.
         """
-        self.redis.set(self._format_key(key), value)
+        return self.set_value(key, value)
 
     def do_remove(self):
         """
@@ -91,13 +96,14 @@ class RedisBeakerManager(NamespaceManager):
         """
         Set key to cache with optional expiration time.
         """
+        value = pickle.dumps(value, pickle.HIGHEST_PROTOCOL)
         self.redis.set(self._format_key(key), value, ex=expiretime)
 
     def _format_key(self, key):
         """
         Prepend namespace value to key.
         """
-        return ':'.join((self.namespance, key))
+        return u':'.join(('beaker', self.namespace, key))
 
 
 def init_db_pool(app):
