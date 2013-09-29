@@ -1,6 +1,73 @@
 {% extends "base.html" %}
 {% import "forms.html" as forms %}
 {% block html_title %}{{ super() }}. Yet another Google Reader alternative built on top of Python{% endblock %}
+{% block title %}Read the Stuff in three easy steps{% endblock %}
 {% block content %}
-  {{ forms.subscriptions_form(subscriptions_form, "Step 2. Import your subscriptions") }}
+
+  <div class="index">
+    <div class="form-horizontal{% if user %} faded{% endif %}">
+      <legend>Step 1. Authorize yourself{% if user %}. Done!{% endif %}</legend>
+      <div class="form-group">
+        {% if not user %}
+        <label class="col-lg-3 control-label">Select method</label>
+        <div class="col-lg-9">
+          <a class="btn btn-success" href="{{ reverse("login") }}">Dummy Test Account</a>
+          <a class="btn btn-danger disabled" href="#google">Google</a>
+          <a class="btn btn-primary disabled" href="#twitter">Twitter</a>
+        </div>
+        {% else %}
+        <label class="col-lg-3 control-label">Authorized as</label>
+        <div class="col-lg-9">
+          <p class="form-control-static">Dummy User</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if user and not subscriptions %}
+    {{ forms.subscriptions_form(subscriptions_form, "Step 2. Import subscriptions") }}
+    {% else %}
+    <div class="form-horizontal faded">
+      <legend>Step 2. Import subscriptions. Done!</legend>
+    </div>
+    {% endif %}
+
+    {% if user and subscriptions %}
+    <div class="form-horizontal">
+      <legend>Step 3. You're ready! Now...</legend>
+      <div class="row">
+        <div class="col-lg-4">
+          <h4>Reading fresh stuff</h4>
+          <p>
+            All your subscriptions would be refreshed automaticaly in 15 minutes,
+            so you don't miss anything important.
+          </p>
+        </div>
+
+        <div class="col-lg-4">
+          <h4>Sharing your stuff</h4>
+          <p>
+            Share entries with your friends by email or tweet them to your
+            followers.
+          </p>
+          <p>
+            <a class="btn btn-success" href="{{ reverse("entries") }}">Start reading</a>
+        </div>
+
+        <div class="col-lg-4">
+          <h4>Searching your entries</h4>
+          <p>
+            With full-text search engine you can find any entires anytime. Don't
+            be afraid of missing something important.
+          </p>
+        </div>
+      </div>
+    </div>
+    {% else %}
+    <div class="form-horizontal faded">
+      <legend>Step 3. You done!</legend>
+    </div>
+    {% endif %}
+  </div>
+
 {% endblock %}

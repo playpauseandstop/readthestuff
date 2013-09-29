@@ -5,7 +5,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="{{ reverse("static", "vendor/bootstrap-3.0.0/css/bootstrap.min.css") }}" rel="stylesheet" type="text/css">
+  <link href="{{ reverse("static", "vendor/bootstrap-3.0.0/css/bootstrap.min.css") }}" media="screen,projection,tv" rel="stylesheet" type="text/css">
+  <link href="{{ reverse("static", "css/screen.css") }}" media="screen,projection,tv" rel="stylesheet" type="text/css">
+
   {% block extra_head %}{% endblock %}
 </head>
 
@@ -15,7 +17,16 @@
     <div class="page-header">
       <h1>{% block title %}Read the Stuff{% endblock %}</h1>
     </div>
+
     {% block content %}{% endblock %}
+
+    <div class="footer">
+      <p>
+        2013. Igor Davydenko<br>
+        Source code available on
+        <a href="https://github.com/playpauseandstop/readthestuff">GitHub</a>
+      </p>
+    </div>
   </div>
 
   {% block extra_body %}{% endblock %}
