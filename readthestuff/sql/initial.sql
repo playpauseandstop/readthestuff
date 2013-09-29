@@ -15,6 +15,22 @@ CREATE TABLE IF NOT EXISTS tags (
     name varchar(255) NOT NULL UNIQUE
 );
 
+CREATE SEQUENCE user_id_seq;
+CREATE TABLE IF NOT EXISTS users (
+    id integer PRIMARY KEY DEFAULT nextval('user_id_seq'),
+
+    username varchar(255) NOT NULL UNIQUE,
+    email varchar(255),
+    google varchar(255),
+    twitter varchar(255),
+
+    setup_done boolean DEFAULT FALSE,
+    only_unread boolean DEFAULT FALSE,
+
+    created_at timestamp with time zone,
+    updated_at timestamp with time zone
+);
+
 CREATE SEQUENCE user_subscription_id_seq;
 CREATE TABLE IF NOT EXISTS user_subscriptions (
     id integer PRIMARY KEY DEFAULT nextval('user_subscription_id_seq'),
