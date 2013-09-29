@@ -12,18 +12,46 @@ import logging
 from psycopg2 import Error as DatabaseError
 from wtforms.validators import ValidationError
 
-from . import subscriptions, users
-from .app import app
+from . import entries, subscriptions, users
+from .app import app, queue_entries
 from .forms import ImportSubscriptionsForm
 
 
 logger = logging.getLogger(__name__)
 
 
-def entries(request, tag_id=None, subscription_id=None, only_unread=True):
+def done_setup(request):
+    """
+    Finish setup process.
+    """
+    user = users.get_from_session(request)
+
+    if not user:
+        return app.redirect('index')
+
+    user = users.update(user, setup_done=True)
+    users.store_to_session(request, user)
+
+    queue_entries.enqueue(entries.fetch, user)
+    return app.redirect('entries')
+
+
+def entries_list(request, tag_id=None, subscription_id=None, only_unread=True):
     """
     Show user entries by tag or subscription ID.
     """
+    user = users.get_from_session(request)
+
+    if not user:
+        return app.redirect('index')
+
+    lookup = {'only_unread': only_unread,
+              'subscription_id': subscription_id,
+              'tag_id': tag_id}
+
+    return {'entries': entries.get(user, **lookup),
+            'subscriptions': subscriptions.get(user, False),
+            'user': user}
 
 
 def import_subscriptions(request):

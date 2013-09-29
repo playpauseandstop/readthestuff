@@ -1,10 +1,10 @@
 """
-================
-readthestuff.ext
-================
+==================
+readthestuff.utils
+==================
 
-Extensions for Read the Stuff project, like init DB pool and setup cache and
-sessions for web requests.
+Extensions and utilities for Read the Stuff project, like init DB pool and
+setup cache and sessions for web requests.
 
 """
 
@@ -23,6 +23,19 @@ from beaker.synchronization import file_synchronizer
 from beaker.util import verify_directory
 from psycopg2.pool import ThreadedConnectionPool
 from redis import StrictRedis
+
+
+class PickleRecord(object):
+    """
+    Make any record returned from PostgreSQL by named tuple cursor available
+    for pickling.
+    """
+    def __init__(self, record):
+        """
+        Store all record fields to object's dict.
+        """
+        for field in record._fields:
+            setattr(self, field, getattr(record, field))
 
 
 class RedisBeakerManager(NamespaceManager):

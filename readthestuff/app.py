@@ -12,11 +12,12 @@ from pyelasticsearch import ElasticSearch
 from raven import Client as SentryClient
 from raven.middleware import Sentry
 from redis import StrictRedis
+from rq import Queue
 
 from rororo.app import create_app
 
 from . import settings
-from .ext import init_db_pool, register_redis_to_beaker
+from .utils import init_db_pool, register_redis_to_beaker
 
 
 # Create suitable WSGI application
@@ -28,6 +29,9 @@ db = init_db_pool(app)
 # Setup connections to ElasticSearch and Redis
 elastic = ElasticSearch(app.settings.ELASTICSEARCH_URL)
 redis = StrictRedis.from_url(app.settings.REDIS_URL)
+
+# Setup queues
+queue_entries = Queue(app.settings.QUEUE_ENTRIES, connection=redis)
 
 # Setup session support
 register_redis_to_beaker()

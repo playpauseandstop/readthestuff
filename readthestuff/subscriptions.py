@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 debug = make_debug(app.settings.DEBUG, level='info', instance=logger)
 
 
-def get(user):
+def get(user, plain=True):
     """
     Return list of user subscriptions from database.
     """
