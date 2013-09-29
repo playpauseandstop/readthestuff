@@ -11,7 +11,7 @@ import sys
 
 from psycopg2.extras import NamedTupleCursor
 from rororo import GET, POST
-from rororo.utils import import_settings
+from rororo.utils import import_settings, setup_logging, setup_timezone
 
 
 # Debug settings
@@ -30,9 +30,11 @@ ELASTICSEARCH_URL = 'http://127.0.0.1:9200/'
 REDIS_URL = 'redis://127.0.0.1:6379/0'
 
 # Date and time settings
+DISABLE_SETUP_TIMEZONE = True
 TIME_ZONE = 'UTC'
 
 # Logging settings
+DISABLE_SETUP_LOGGING = True
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -64,6 +66,10 @@ LOGGING = {
             'handlers': ['stderr', 'stdout'],
             'level': 'DEBUG',
         },
+        'rq': {
+            'handlers': ['stderr', 'stdout'],
+            'level': 'INFO',
+        }
     }
 }
 LOCAL_LOGGING = {}
@@ -83,6 +89,11 @@ ROUTES = (
 )
 ROUTES_VIEW_PREFIX = 'readthestuff.views'
 
+# Queues settings
+QUEUE_ENTRIES = 'readthestuff_entries'
+QUEUE_SUBSCRIPTIONS = 'readthestuff_subscriptions'
+QUEUES = (QUEUE_ENTRIES, QUEUE_SUBSCRIPTIONS)
+
 # Session settings
 SECRET_KEY = 'please provide proper secret key in local settings'
 SESSION_KEY = 'readthestuff_sid'
@@ -100,3 +111,8 @@ if SENTRY_DSN.startswith('https://'):
         }
     })
     LOGGING['loggers']['readthestuff']['handlers'].append('sentry')
+    LOGGING['loggers']['rq']['handlers'].append('sentry')
+
+# Setup logging and timezone for both of WSGI and RQ parts
+setup_logging(LOGGING, LOCAL_LOGGING)
+setup_timezone(TIME_ZONE)
