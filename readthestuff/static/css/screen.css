@@ -1,9 +1,13 @@
 @charset "utf-8";
 
 @media (min-width: 768px) {
-    .container {
+    .container.base-container {
         max-width: 730px;
     }
+}
+
+.indent-container {
+    margin-top: 60px;
 }
 
 .index .form-horizontal {
@@ -12,6 +16,28 @@
 
 .index .faded, .index .faded * {
     color: #ccc;
+}
+
+.sidebar {
+
+}
+
+.sidenav {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-shadow: 0 1px 0 #fff;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+}
+
+.sidenav > li > a {
+    font-weight: bold;
+}
+
+.sidenav > li > ul {
+    margin-left: 30px;
 }
 
 .footer {

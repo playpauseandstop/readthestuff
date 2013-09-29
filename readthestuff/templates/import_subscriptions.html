@@ -2,7 +2,7 @@
 {% import "forms.html" as forms %}
 {% block extra_head %}
   {% if not form %}
-  <meta http-equiv="Refresh" content="10; url={{ reverse("index") }}">
+  <meta http-equiv="Refresh" content="5; url={{ reverse("index") }}">
   {% endif %}
 {% endblock %}
 {% block title -%}
@@ -14,11 +14,10 @@
     <div class="alert alert-success">
       <p>
         Your subscriptions successfully loaded to <strong>Read the Stuff</strong>.
-        We'll start to fetch data for you immediately.
       </p>
       <p>
         <a href="{{ reverse("index") }}" class="alert-link">Back to main page</a>
-        to start reading the stuff :)
+        to perform last step before reading your stuff.
       </p>
     </div>
     {% else %}
