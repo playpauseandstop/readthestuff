@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Read the Stuff</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="{{ reverse("static", "vendor/bootstrap-3.0.0/css/bootstrap.min.css") }}" media="screen,projection,tv" rel="stylesheet" type="text/css">
+  <link href="{{ reverse("static", "css/screen.css") }}" media="screen,projection,tv" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <a class="navbar-brand" href="{{ reverse("index") }}">Read the Stuff</a>
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="#about">About</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown">
+              Dummy User <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="#settings">Settings</li>
+              <li class="divider"></li>
+              <li><a href="{{ reverse("logout") }}">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
+        <form class="navbar-form navbar-right">
+          <div class="form-group">
+            <input class="form-control" placeholder="Search..." type="search">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="container indent-container">
+    <div class="row">
+      <div class="col-lg-3">
+        <div class="hidden-print sidebar">
+          <ul class="nav sidenav">
+            <li><a href="#tag">Tag</a></li>
+            <ul class="nav">
+              <li><a href="#subscription">Subscription</a></li>
+            </ul>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-lg-9">
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ reverse("static", "vendor/jquery-1.10.2.min.js") }}" type="text/javascript"></script>
+  <script src="{{ reverse("static", "vendor/bootstrap-3.0.0/js/bootstrap.min.js") }}" type="text/javascript"></script>
+
+</body>
+
+</html>
