@@ -2,6 +2,9 @@
 readthestuff
 ============
 
+.. important:: Project is incomplete. Only few features working proper.
+   My inconvinience to WSGI Wrestle 2013 judges.
+
 Yet another Google Reader alternative built on top of Python.
 
 Requirements
@@ -11,7 +14,7 @@ Requirements
 * `Make <http://www.gnu.org/software/make>`_
 * `bootstrapper <http://pypi.python.org/pypi/bootstrapper>`_ 0.1.5 or higher
 * `PostgreSQL <http://www.postgresql.org/>`_ 9.3 or higher
-* `ElasticSearch <http://elasticsearch.org/>`_ 0.10.5 or higher
+* `ElasticSearch <http://elasticsearch.org/>`_ 0.90.5 or higher
 * `Redis <http://redis.io/>`_ 2.6.16 or higher
 
 License
