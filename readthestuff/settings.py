@@ -7,7 +7,9 @@ Main settings for Read the Stuff project.
 
 """
 
+import os
 import sys
+import tempfile
 
 from psycopg2.extras import NamedTupleCursor
 from rororo import GET, POST
@@ -82,10 +84,38 @@ PEP8_CLASS = 'flake8.engine.get_style_guide'
 # Routes settings
 ROUTES = (
     GET('/', 'index', renderer='index.html'),
+
+    GET('/entries', 'entries', renderer='entries.html'),
+    GET('/entries/all',
+        'entries',
+        default={'only_unread': False},
+        name='all_entries',
+        renderer='entries.html'),
+    GET('/entries/subscription/{subscription_id:int}',
+        'entries',
+        name='subscription_entries',
+        renderer='entries.html'),
+    GET('/entries/subscription/{subscription_id:int}/all',
+        'entries',
+        default={'only_unread': False},
+        name='all_subscription_entries',
+        renderer='entries.html'),
+    GET('/entries/tag/{tag_id:int}',
+        'entries',
+        name='tag_entries',
+        renderer='entries.html'),
+    GET('/entries/tag/{tag_id:int}/all',
+        'entries',
+        default={'only_unread': False},
+        name='all_tag_entries',
+        renderer='entries.html'),
+
     POST('/import',
          'import_subscriptions',
          renderer='import_subscriptions.html'),
-    GET('/test', 'test', renderer='test.html')
+
+    GET('/login', 'login'),
+    GET('/logout', 'logout'),
 )
 ROUTES_VIEW_PREFIX = 'readthestuff.views'
 
@@ -96,7 +126,9 @@ QUEUES = (QUEUE_ENTRIES, QUEUE_SUBSCRIPTIONS)
 
 # Session settings
 SECRET_KEY = 'please provide proper secret key in local settings'
+SESSION_DATA_DIR = os.path.join(tempfile.gettempdir(), 'readthestuff_beaker')
 SESSION_KEY = 'readthestuff_sid'
+SESSION_LOCK_DIR = None
 
 # Import local settings
 import_settings('readthestuff.settings_local', locals(), True)

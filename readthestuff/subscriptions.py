@@ -26,6 +26,24 @@ logger = logging.getLogger(__name__)
 debug = make_debug(app.settings.DEBUG, level='info', instance=logger)
 
 
+def get(user):
+    """
+    Return list of user subscriptions from database.
+    """
+    conn = db.getconn()
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM user_subscriptions WHERE user_id = %s',
+                   (user.id, ))
+
+    try:
+        return cursor.fetchall()
+    except ProgrammingError:
+        return []
+    finally:
+        db.putconn(conn, close=True)
+
+
 def parse(wrapper):
     """
     Parse subscriptions from file wrapper's content.

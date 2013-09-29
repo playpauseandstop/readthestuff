@@ -32,7 +32,9 @@ redis = StrictRedis.from_url(app.settings.REDIS_URL)
 # Setup session support
 register_redis_to_beaker()
 app.wsgi_app = SessionMiddleware(app.wsgi_app, {
+    'session.data_dir': app.settings.SESSION_DATA_DIR,
     'session.key': app.settings.SESSION_KEY,
+    'session.lock_dir': app.settings.SESSION_LOCK_DIR,
     'session.secret': app.settings.SECRET_KEY,
     'session.type': 'ext:redis',
     'session.url': app.settings.REDIS_URL,
