@@ -17,17 +17,12 @@
         <a class="navbar-brand" href="{{ reverse("index") }}">Read the Stuff</a>
       </div>
       <div class="navbar-collapse collapse">
-        <ul class="nav navbar-nav">
-          <li><a href="#about">About</a></li>
-        </ul>
         <ul class="nav navbar-nav navbar-right">
           <li class="dropdown">
             <a class="dropdown-toggle" data-toggle="dropdown">
               Dummy User <b class="caret"></b>
             </a>
             <ul class="dropdown-menu">
-              <li><a href="#settings">Settings</li>
-              <li class="divider"></li>
               <li><a href="{{ reverse("logout") }}">Logout</a></li>
             </ul>
           </li>
@@ -46,15 +41,30 @@
       <div class="col-lg-3">
         <div class="hidden-print sidebar">
           <ul class="nav sidenav">
-            <li><a href="#tag">Tag</a></li>
+            {% for tag, items in subscriptions.iteritems() %}
+            <li><a href="#{{ tag }}">{{ tag }}</a></li>
             <ul class="nav">
-              <li><a href="#subscription">Subscription</a></li>
+              {% for item in items %}
+              <li><a href="{{ item.href }}">{{ item.title|safe }}</a></li>
+              {% endfor %}
             </ul>
+            {% endfor %}
           </ul>
         </div>
       </div>
 
       <div class="col-lg-9">
+        <div class="jumbotron">
+          <h1>Little announcement</h1>
+          <p>
+            My main target @ WSGI Wrestle 2013 was optimizing my litte WSGI framework
+            <a href="https://github.com/playpauseandstop/rororo">rororo</a> for
+            real-world usage by adding support of needed batteries.
+          </p>
+          <p>
+            Also I very miss on Google Reader and sometime I'll finish this project.
+          </p>
+        </div>
       </div>
     </div>
   </div>

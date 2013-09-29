@@ -7,7 +7,7 @@
 }
 
 .indent-container {
-    margin-top: 60px;
+    margin-top: 80px;
 }
 
 .index .form-horizontal {
@@ -23,21 +23,20 @@
 }
 
 .sidenav {
-    margin-top: 30px;
-    margin-bottom: 30px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
     padding-top: 10px;
     padding-bottom: 10px;
     text-shadow: 0 1px 0 #fff;
-    background-color: #f5f5f5;
-    border-radius: 5px;
 }
 
 .sidenav > li > a {
     font-weight: bold;
 }
 
-.sidenav > li > ul {
-    margin-left: 30px;
+.sidenav .nav {
+    display: none;
+    margin-left: 15px;
 }
 
 .footer {
