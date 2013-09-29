@@ -33,15 +33,37 @@ def get(user, plain=True):
     conn = db.getconn()
     cursor = conn.cursor()
 
-    cursor.execute('SELECT * FROM user_subscriptions WHERE user_id = %s',
-                   (user.id, ))
+    if plain:
+        sql = 'SELECT * FROM user_subscriptions WHERE user_id = %s'
+    else:
+        sql = ('SELECT us.*, s.href, t.name AS tag_name '
+               'FROM user_subscriptions AS us '
+               'LEFT OUTER JOIN user_tag_subscriptions AS uts '
+               'ON us.id = uts.user_subscription_id '
+               'LEFT OUTER JOIN subscriptions AS s '
+               'ON us.subscription_id = s.id '
+               'LEFT OUTER JOIN tags AS t ON uts.tag_id = t.id '
+               'WHERE us.user_id = %s '
+               'ORDER BY us.title')
+
+    cursor.execute(sql, (user.id, ))
 
     try:
-        return cursor.fetchall()
+        result = cursor.fetchall()
     except ProgrammingError:
-        return []
+        result = []
     finally:
         db.putconn(conn, close=True)
+
+    if not result or plain:
+        return result
+
+    data = defaultdict(list)
+
+    for item in result:
+        data[item.tag_name].append(item)
+
+    return data
 
 
 def parse(wrapper):
@@ -112,9 +134,9 @@ def store(user, user_subscriptions):
         for item in data:
             subscriptions_set.add(item['xmlUrl'])
             user_subsciptions_dict[item['xmlUrl']] = (
-                item['htmlUrl'],
                 item['title'],
-                item['text']
+                item['htmlUrl'],
+                item['text'],
             )
             user_tag_subscriptions_dict[tag].append(item['xmlUrl'])
 

@@ -21,6 +21,7 @@ from beaker.container import NamespaceManager
 from beaker.exceptions import MissingCacheParameter
 from beaker.synchronization import file_synchronizer
 from beaker.util import verify_directory
+from psycopg2.extensions import UNICODE, UNICODEARRAY, register_type
 from psycopg2.pool import ThreadedConnectionPool
 from redis import StrictRedis
 
@@ -123,6 +124,10 @@ def init_db_pool(app):
     """
     Initialize database pool.
     """
+    # Setup unicode support
+    register_type(UNICODE)
+    register_type(UNICODEARRAY)
+
     # Initial vars
     message = 'Cannot initialize DB pool without {0} option'.format
     options = app.settings.DATABASE_POOL_OPTIONS.copy()
