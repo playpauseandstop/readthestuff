@@ -20,7 +20,9 @@ class FileField(BaseFileField):
         """
         Validate only file's name not file's content.
         """
-        self.data = data[0].filename
+        self.data = (data[0].filename
+                     if hasattr(data[0], 'filename')
+                     else data[0])
 
 
 class ImportSubscriptionsForm(Form):
