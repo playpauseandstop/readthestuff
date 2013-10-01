@@ -53,7 +53,7 @@ rq: clean pep8
 	$(HONCHO) start rq
 
 server: clean pep8
-	HOST=$(HOST) PORT=$(PORT) $(HONCHO) start server
+	HOST=$(HOST) PORT=$(PORT) $(HONCHO) start web
 
 shell:
 	$(IPYTHON) --deep-reload --no-banner --no-confirm-exit --pprint
