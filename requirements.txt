@@ -1,4 +1,5 @@
 Beaker==1.6.4
+Fabric==1.8.0
 Jinja2==2.7.1
 WTForms==1.0.5
 eventlet==0.14.0

@@ -5,14 +5,19 @@ PROJECT = readthestuff
 ENV ?= env
 VENV := $(shell echo $(VIRTUAL_ENV))
 
+DEPLOY_BRANCH ?= dev
+DEPLOY_HOST ?= $(PROJECT)
+
 HOST ?= 0.0.0.0
 PORT ?= 8321
 
 ifneq ($(VENV),)
+	FAB = fab
 	HONCHO = honcho
 	IPYTHON = ipython
 	PYTHON = python
 else
+	FAB = $(ENV)/bin/fab
 	HONCHO = . $(ENV)/bin/activate && honcho
 	IPYTHON = $(ENV)/bin/ipython
 	PYTHON = $(ENV)/bin/python
@@ -30,6 +35,9 @@ createdb:
 
 dbshell:
 	psql -U $(PROJECT) -d $(PROJECT)
+
+deploy:
+	$(FAB) deploy:$(DEPLOY_BRANCH) -H $(DEPLOY_HOST)
 
 devserver: clean pep8
 	COMMAND="runserver --host=$(HOST) --port=$(PORT)" $(MAKE) manage
