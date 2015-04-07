@@ -1,59 +1,103 @@
-.PHONY: bootstrap clean createdb dbshell devserver distclean dropdb initdb manage rq server
+.PHONY: bootstrap clean deploy deploy-task eslint lint pep8 server shell \
+		status test_integrational test_unit
 
+# Project settings
+DEV ?= 1
 PROJECT = readthestuff
 
+# Virtual environment settings
 ENV ?= env
-VENV := $(shell echo $(VIRTUAL_ENV))
+VENV = $(shell python -c "import sys; print(int(hasattr(sys, 'real_prefix')));")
 
-HOST ?= 0.0.0.0
-PORT ?= 8321
-
-ifneq ($(VENV),)
-	HONCHO = honcho
+# Python commands
+ifeq ($(VENV),1)
+	GUNICORN = gunicorn
 	IPYTHON = ipython
 	PYTHON = python
 else
-	HONCHO = . $(ENV)/bin/activate && honcho
+	GUNICORN = $(ENV)/bin/gunicorn
 	IPYTHON = $(ENV)/bin/ipython
 	PYTHON = $(ENV)/bin/python
 endif
 
+# Server settings
+DEPLOY_HOST ?= readthestuff
+GUNICORN_WORKERS ?= $(shell python -c "import multiprocessing; print(multiprocessing.cpu_count() * 2 + 1);")
+LOGS_DIR ?= ./logs
+SERVER_HOST ?= 0.0.0.0
+SERVER_PORT ?= 8201
+
+# Static settings
+NPM ?= npm
+STATIC_DIR ?= $(PROJECT)/static/dist
+
+# Test settings
+COVERAGE_DIR ?= /tmp/$(PROJECT)-coverage
+
+# Setup bootstrapper & Gunicorn args
+ifeq ($(DEV),1)
+	bootstrapper_args = -d
+	gunicorn_args = --reload
+else
+	gunicorn_args = --access-logfile=$(LOGS_DIR)/gunicorn.access.log \
+	--error-logfile=$(LOGS_DIR)/gunicorn.error.log
+endif
+
 bootstrap:
-	PROJECT=$(PROJECT) bootstrapper -e $(ENV)
+	PROJECT=$(PROJECT) bootstrapper -e $(ENV)/ $(bootstrapper_args)
+	$(NPM) install
 
 clean:
 	find . -name "*.pyc" -delete
 
-createdb:
-	psql -c '\du' | grep "^ $(PROJECT)" && : || createuser -s -P $(PROJECT)
-	psql -l | grep "^ $(PROJECT)" && : || createdb -U $(PROJECT) $(PROJECT)
+deploy: test eslint
+	git push
+	ssh $(DEPLOY_HOST) "cd projects/$(PROJECT)/ && git pull && make deploy-task"
 
-dbshell:
-	psql -U $(PROJECT) -d $(PROJECT)
+deploy-task:
+	# WARNING: Deploy task should be executed only on remote host!
+	DEV=0 $(MAKE) bootstrap
+	sudo cp $(PROJECT).upstart /etc/init/$(PROJECT).conf
+	sudo service $(PROJECT) restart
+	sudo cp $(PROJECT).nginx /etc/nginx/sites-available/$(PROJECT).com
+	sudo service nginx restart
 
-devserver: clean pep8
-	COMMAND="runserver --host=$(HOST) --port=$(PORT)" $(MAKE) manage
+distclean: clean
+	rm -rf $(ENV)/ node_modules/ $(STATIC_DIR)/
+	rm -f .coverage npm-debug.log $(PROJECT)/settings_local.py
 
-distclean: clean dropdb
-	rm -r $(ENV)/ $(PROJECT)/settings_local.py
+eslint:
+	$(NPM) run lint
 
-dropdb:
-	dropdb -U $(PROJECT) $(PROJECT)
-
-initdb: createdb
-	psql -U $(PROJECT) -d $(PROJECT) -f $(PROJECT)/sql/initial.sql -v client_min_messages=warning
-
-manage:
-	$(PYTHON) manage.py $(COMMAND)
+lint: pep8 eslint
 
 pep8:
-	COMMAND=pep8 $(MAKE) manage
+	$(PEP8) --statistics $(PROJECT)/
 
-rq: clean pep8
-	$(HONCHO) start rq
-
-server: clean pep8
-	HOST=$(HOST) PORT=$(PORT) $(HONCHO) start server
+server: clean
+ifeq ($(DEV),1)
+	$(MAKE) pep8
+else
+	mkdir -p $(LOGS_DIR)/
+endif
+	DEBUG=$(DEV) $(GUNICORN) -b $(SERVER_HOST):$(SERVER_PORT) -k aiohttp.worker.GunicornWebWorker -w $(GUNICORN_WORKERS) -t 60 --graceful-timeout=60 $(gunicorn_args) $(GUNICORN_ARGS) $(PROJECT).app:app
 
 shell:
 	$(IPYTHON) --deep-reload --no-banner --no-confirm-exit --pprint
+
+status:
+ifeq ($(SERVICE),)
+	# SERVICE env var should be supplied
+else
+	ssh $(DEPLOY_HOST) "sudo service $(SERVICE) status"
+endif
+
+test: clean pep8 test_unit test_integrational
+
+test_integrational: clean pep8
+	$(NOSETESTS) --logging-clear-handlers $(TEST_ARGS) -w $(PROJECT)/ -a integrational
+
+test_unit: clean pep8
+	$(NOSETESTS) --logging-clear-handlers $(TEST_ARGS) -w $(PROJECT)/ -a "!integrational" \
+	--with-coverage --cover-branches --cover-erase --cover-package=$(PROJECT) \
+	--cover-html --cover-html-dir=$(COVERAGE_DIR)
