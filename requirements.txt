@@ -1,4 +1,6 @@
 aiohttp==0.15.0
 gunicorn==19.3.0
+Jinja2==2.7.3
+MarkupSafe==0.23
 
 -e git://github.com/playpauseandstop/rororo.git#egg=rororo

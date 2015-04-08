@@ -13,10 +13,12 @@ VENV = $(shell python -c "import sys; print(int(hasattr(sys, 'real_prefix')));")
 ifeq ($(VENV),1)
 	GUNICORN = gunicorn
 	IPYTHON = ipython
+	PEP8 = flake8
 	PYTHON = python
 else
 	GUNICORN = $(ENV)/bin/gunicorn
 	IPYTHON = $(ENV)/bin/ipython
+	PEP8 = $(ENV)/bin/flake8
 	PYTHON = $(ENV)/bin/python
 endif
 
@@ -82,7 +84,7 @@ ifeq ($(DEV),1)
 else
 	mkdir -p $(LOGS_DIR)/
 endif
-	DEBUG=$(DEV) $(GUNICORN) -b $(SERVER_HOST):$(SERVER_PORT) -k aiohttp.worker.GunicornWebWorker -w $(GUNICORN_WORKERS) -t 60 --graceful-timeout=60 $(gunicorn_args) $(GUNICORN_ARGS) $(PROJECT).app:app
+	DEBUG=$(DEV) $(GUNICORN) -b $(SERVER_HOST):$(SERVER_PORT) -n $(PROJECT) -k aiohttp.worker.GunicornWebWorker -w $(GUNICORN_WORKERS) -t 60 --graceful-timeout=60 $(gunicorn_args) $(GUNICORN_ARGS) $(PROJECT).app:app
 
 shell:
 	$(IPYTHON) --deep-reload --no-banner --no-confirm-exit --pprint
