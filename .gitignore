@@ -2,6 +2,7 @@
 
 env/
 node_modules/
+readthestuff/static/dist/
 
 npm-debug.log
 settings_local.py

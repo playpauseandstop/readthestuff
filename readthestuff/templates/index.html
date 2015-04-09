@@ -2,16 +2,29 @@
 <html>
 
 <head>
-  <title>Read the Stuff</title>
+  <title>{{ _("Read the Stuff") }}</title>
+
   <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="robots" content="noindex">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-  <h1>Read the Stuff</h1>
-  <h2>
-    Yet another Google Reader alternative built on top of Python 3 &amp;
-    Asyncio stack.
-  </h2>
+
+  <div id="readthestuff-container">
+    <div class="loading text-muted">{{ _("Loading&hellip;")|safe }}</div>
+  </div>
+
+  <script src="/static/dist/readthestuff{% if settings.DEBUG %}.debug{% endif %}.js" type="text/javascript"></script>
+  <script type="text/javascript">
+    ReadTheStuff.React.initializeTouchEvents(true);
+    ReadTheStuff.run(
+      document.getElementById("readthestuff-container"),
+      "/api/"
+    );
+  </script>
+
 </body>
 
 </html>
