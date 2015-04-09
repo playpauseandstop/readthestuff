@@ -7,6 +7,8 @@ Settings for Read the Stuff project.
 
 """
 
+import gettext
+
 from pathlib import Path
 
 from rororo.logger import default_logging_dict, update_sentry_logging
@@ -29,12 +31,17 @@ DEBUG = to_bool(from_env('DEBUG', True))
 TIME_ZONE = 'Europe/Kiev'
 
 # Logging settings
-loggers = ('aiohttp', 'gunicorn', 'readthestuff', 'rororo')
+loggers = ('aiohttp', 'readthestuff', 'rororo')
 LOGGING = default_logging_dict(*loggers)
 SENTRY_DSN = None
 
 # Template settings
 JINJA_FILTERS = {'format': format}
+JINJA_GLOBALS = {
+    '_': gettext.gettext,
+    'gettext': gettext.gettext,
+    'ngettext': gettext.ngettext,
+}
 TEMPLATE_DIRS = (
     str((rel / 'templates').absolute()),
 )
