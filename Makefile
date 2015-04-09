@@ -1,5 +1,5 @@
 .PHONY: bootstrap clean deploy deploy-task eslint lint pep8 server shell \
-		status test_integrational test_unit
+		static status test_integrational test_unit
 
 # Project settings
 DEV ?= 1
@@ -84,10 +84,19 @@ ifeq ($(DEV),1)
 else
 	mkdir -p $(LOGS_DIR)/
 endif
-	DEBUG=$(DEV) $(GUNICORN) -b $(SERVER_HOST):$(SERVER_PORT) -n $(PROJECT) -k aiohttp.worker.GunicornWebWorker -w $(GUNICORN_WORKERS) -t 60 --graceful-timeout=60 $(gunicorn_args) $(GUNICORN_ARGS) $(PROJECT).app:app
+	DEBUG=$(DEV) $(GUNICORN) -b $(SERVER_HOST):$(SERVER_PORT) -n $(PROJECT)-gunicorn -k aiohttp.worker.GunicornWebWorker -w $(GUNICORN_WORKERS) -t 60 --graceful-timeout=60 $(gunicorn_args) $(GUNICORN_ARGS) $(PROJECT).app:app
 
 shell:
 	$(IPYTHON) --deep-reload --no-banner --no-confirm-exit --pprint
+
+static:
+	mkdir -p $(STATIC_DIR)/
+ifeq ($(DEV),1)
+	$(MAKE) eslint
+	$(NPM) run watch
+else
+	$(NPM) run build
+endif
 
 status:
 ifeq ($(SERVICE),)

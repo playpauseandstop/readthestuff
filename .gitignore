@@ -1,6 +1,7 @@
 *.py[co]
 
 env/
+node_modules/
 
 npm-debug.log
 settings_local.py

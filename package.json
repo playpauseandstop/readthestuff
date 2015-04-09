@@ -1,0 +1,45 @@
+{
+  "name": "readthestuff",
+  "version": "2.0.0",
+
+  "bugs": {
+    "url": "https://github.com/playpauseandstop/readthestuff/issues"
+  },
+  "description": "Read the Stuff Frontend",
+  "homepage": "https://github.com/playpauseandstop/readthestuff",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/playpauseandstop/readthestuff"
+  },
+
+  "dependencies": {
+    "bootstrap": "3.3.4",
+    "classnames": "1.2.0",
+    "es6-promise": "2.0.1",
+    "jquery": "2.1.3",
+    "moment": "2.10.2",
+    "moment-timezone": "0.3.1",
+    "qs": "2.4.1",
+    "react": "0.13.1",
+    "react-router": "0.13.2",
+    "react-tools": "0.13.1",
+    "underscore": "1.8.3",
+    "whatwg-fetch": "0.7.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "2.0.2",
+    "babel-loader": "5.0.0",
+    "babel-runtime": "5.0.12",
+    "eslint": "0.18.0",
+    "eslint-plugin-react": "2.1.0",
+    "json-loader": "0.5.1",
+    "webpack": "1.8.2",
+    "uglify-js": "2.4.19"
+  },
+
+  "scripts": {
+    "build": "webpack --progress --colors",
+    "lint": "eslint ./readthestuff/static/readthestuff/",
+    "watch": "webpack --config webpack.config.dev.js --progress --colors --devtool source-map --watch"
+  }
+}

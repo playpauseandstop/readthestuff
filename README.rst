@@ -2,7 +2,8 @@
 readthestuff
 ============
 
-Yet another Google Reader alternative built on top of Python 3 & Asyncio stack.
+Yet another Google Reader alternative built on top of Python 3 & Asyncio stack
+on backend and with React.js on frontend.
 
 Requirements
 ============
