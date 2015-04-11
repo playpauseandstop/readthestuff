@@ -10,4 +10,4 @@ API views for Read the Stuff project.
 
 def browser(request):
     """Browse over available API URLs due to user logged in status."""
-    return {'login': '/api/login', 'user': {}}
+    return {'urls': {}, 'user': {}}

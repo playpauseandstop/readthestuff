@@ -15,7 +15,7 @@ from aiohttp import web
 
 from rororo.settings import immutable_settings
 
-from . import api, settings, views
+from . import api, auth, settings, views
 from .renderers import html_renderer, json_renderer
 from .templates import jinja_env
 
@@ -54,12 +54,22 @@ def create_app(**options):
     app['settings'] = settings_dict
 
     # API URLs
-    app.router.add_route('GET', '/api/', json_renderer(api.browser))
+    add_route = app.router.add_route
+    add_route('GET', '/api/', json_renderer(api.browser))
 
     # Pages & React Router URLs
     index_html = html_renderer(views.index)
-    for path in ('/', '/about', '/contact', '/privacy', '/terms'):
-        app.router.add_route('GET', path, index_html)
+    for path in ('/', '/about', '/contact', '/login', '/privacy', '/terms'):
+        add_route('GET', path, index_html)
+
+    # Login redirects & callback URLs
+    for provider in ('google', ):
+        add_route('GET',
+                  '/login/{0}'.format(provider),
+                  getattr(auth, '{0}_login'.format(provider)))
+        add_route('GET',
+                  '/login/{0}/callback'.format(provider),
+                  getattr(auth, '{0}_login_callback'.format(provider)))
 
     # Static URLs
     app.router.add_static('/static', str((rel / 'static').absolute()))
