@@ -14,7 +14,7 @@ import React from "react";
 class ContactPage extends React.Component {
   render() {
     return (
-      <div>
+      <div className="container">
         Contact Page
       </div>
     );

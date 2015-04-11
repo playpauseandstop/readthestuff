@@ -21,7 +21,7 @@ import DashboardPage from "./pages/DashboardPage";
 import Footer from "./components/Footer";
 import Header from "./components/Header";
 import LandingPage from "./pages/LandingPage";
-import LoginForm from "./forms/LoginForm";
+import LoginPage from "./pages/LoginPage";
 import LogoutPage from "./pages/LogoutPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
@@ -50,7 +50,7 @@ class App extends React.Component {
   render() {
     return (
       <div id="readthestuff">
-        {!_.isEmpty(this.state.user) ? <Header user={this.state.user} /> : ""}
+        <Header user={this.state.user} />
         <RouteHandler {...this.props} />
         <Footer />
       </div>
@@ -71,7 +71,7 @@ export default {
       <Route handler={App} name="app" path="/">
         <DefaultRoute handler={LandingPage} name="landing" />
 
-        <Route handler={LoginForm} name="login-form" path="login" />
+        <Route handler={LoginPage} name="login" />
         <Route handler={LogoutPage} name="logout" />
 
         <Route handler={AboutPage} name="about" />

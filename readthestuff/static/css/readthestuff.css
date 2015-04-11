@@ -1,0 +1,38 @@
+#readthestuff-container {
+  margin: 50px;
+}
+
+#readthestuff-container #readthestuff {
+  margin: -50px;
+}
+
+.btn {
+  font-weight: 300;
+}
+
+.login-buttons .row {
+  margin: 6px 0;
+}
+
+.login-buttons .row:first-child {
+  margin-top: 0;
+}
+
+@media (min-width: 768px) {
+  header hr {
+    margin-top: 0;
+  }
+
+  header .row {
+    padding: 30px 0;
+  }
+
+  header .row h1 {
+    margin: 0;
+    font-weight: bold;
+  }
+
+  .container-main {
+    margin: 50px 0;
+  }
+}

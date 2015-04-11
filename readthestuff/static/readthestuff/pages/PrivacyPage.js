@@ -14,7 +14,7 @@ import React from "react";
 class PrivacyPage extends React.Component {
   render() {
     return (
-      <div>
+      <div className="container">
         Privacy Page
       </div>
     );
