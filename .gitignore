@@ -1,8 +1,11 @@
+*.DS_Store*
 *.py[co]
 
 env/
 node_modules/
 readthestuff/static/dist/
+
+.coverage
 
 npm-debug.log
 settings_local.py
